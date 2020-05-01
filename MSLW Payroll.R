@@ -30,12 +30,14 @@ dict_paycycle_sys <- read.csv(paste0(folder_references,"/PayCycle.csv"), header 
 #dict_paycodes <- read_xlsx(folder_references, "/All Sites Pay Code Mappings.xlsx")
 
 # Splitting Biweekly 2 Pay Cycle ------------------------------------------
-format_biweekly_paycycle <- function(dfs){
+#format_biweekly_paycycle <- function(dfs){
   dfs$`Start-End` <- paste0(dfs$START.DATE, "-",dfs$END.DATE)
   dfs_other <- dfs[!(dfs$`Start-End` %in% dict_paycycle_alt$`Start-End`),]
   dfs_alt <- dfs[dfs$`Start-End` %in% dict_paycycle_alt$`Start-End`,]
   dfs_alt$Hours <- dfs_alt$Hours/2
   dfs_alt$Expense <- dfs_alt$Expense/2
-  
-}
+  dfs_alt_1 <- merge.data.frame(dfs_alt, subset(dict_paycycle_alt, select = c('Start-End', 'Start 1', 'End 1')), all.x = T)
+  dfs_alt_2 <- merge.data.frame(dfs_alt, subset(dict_paycycle_alt, select = c('Start-End', 'Start 2', 'End 2')), all.x = T)
+  dfs_alt_1$START.DATE <- dfs_alt_1$END.DATE <- dfs_alt_2$START.DATE <- dfs_alt_2$END.DATE <- NULL
+  } #have to finish
 
