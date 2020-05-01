@@ -20,3 +20,9 @@ data_mslw <- merge_multiple_dataframes(list_data)
 # Preprocess Data ------------------------------------------------------
 data_mslw_test$START.DATE <- sapply(data_mslw_test$START.DATE, function(x) paste0(substr(x,1,2),"/", substr(x,3,4),"/", substr(x,5,8)))
 data_mslw_test$END.DATE <- sapply(data_mslw_test$END.DATE, function(x) paste0(substr(x,1,2),"/", substr(x,3,4),"/", substr(x,5,8)))
+
+# Import References -------------------------------------------------------
+folder_references <- paste0(dir,"/Reference Tables")
+dict_paycycle_alt <- read_xlsx(paste0(folder_references, "/Dictionary_Alt Pay Cycles.xlsx"))
+dict_paycycle_sys <- read.csv(paste0(folder_references,"/PayCycle.csv"), header = T, stringsAsFactors = F)
+#dict_paycodes <- read_xlsx(folder_references, "/All Sites Pay Code Mappings.xlsx")
