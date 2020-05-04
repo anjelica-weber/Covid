@@ -25,13 +25,14 @@ data_mslw_test$END.DATE <- as.Date(data_mslw_test$END.DATE, "%m/%d/%Y")
 
 # Import References -------------------------------------------------------
 folder_references <- paste0(dir,"/Reference Tables")
-dict_paycycle_alt <- read_xlsx(paste0(folder_references, "/Dictionary_Alt Pay Cycles.xlsx"))
+dict_paycycle_alt <- read_xlsx(paste0(folder_references, "/Dictionary_Alt Pay Cycles_2.xlsx"))
 dict_paycycle_sys <- read.csv(paste0(folder_references,"/PayCycle.csv"), header = T, stringsAsFactors = F)
 #dict_paycodes <- read_xlsx(folder_references, "/All Sites Pay Code Mappings.xlsx")
 
 # Splitting Biweekly 2 Pay Cycle ------------------------------------------
-#format_biweekly_paycycle <- function(dfs){
-  dfs$`Start-End` <- paste0(dfs$START.DATE, "-",dfs$END.DATE)
+format_biweekly_paycycle <- function(dfs){
+  dict_paycycle_alt$`Start-End` <- paste0(dict_paycycle_alt$`START DATE`, "-", dict_paycycle_alt$`END DATE`)
+  dfs$`Start-End` <- paste0(dfs$START.DATE, "-", dfs$END.DATE)
   dfs_other <- dfs[!(dfs$`Start-End` %in% dict_paycycle_alt$`Start-End`),]
   dfs_alt <- dfs[dfs$`Start-End` %in% dict_paycycle_alt$`Start-End`,]
   dfs_alt$Hours <- dfs_alt$Hours/2
@@ -39,5 +40,11 @@ dict_paycycle_sys <- read.csv(paste0(folder_references,"/PayCycle.csv"), header 
   dfs_alt_1 <- merge.data.frame(dfs_alt, subset(dict_paycycle_alt, select = c('Start-End', 'Start 1', 'End 1')), all.x = T)
   dfs_alt_2 <- merge.data.frame(dfs_alt, subset(dict_paycycle_alt, select = c('Start-End', 'Start 2', 'End 2')), all.x = T)
   dfs_alt_1$START.DATE <- dfs_alt_1$END.DATE <- dfs_alt_2$START.DATE <- dfs_alt_2$END.DATE <- NULL
-  } #have to finish
-
+  colnames(dfs_alt_1)[which("Start 1"==colnames(dfs_alt_1))] <- "START.DATE"
+  colnames(dfs_alt_1)[which("End 1"==colnames(dfs_alt_1))] <- "END.DATE"
+  colnames(dfs_alt_2)[which("Start 2"==colnames(dfs_alt_2))] <- "START.DATE"
+  colnames(dfs_alt_2)[which("End 2"==colnames(dfs_alt_2))] <- "END.DATE"
+  dfs_final <- rbind(dfs_other, dfs_alt_1, dfs_alt_2)
+  return(dfs_final)
+  }
+data_mslw_test2 <- format_biweekly_paycycle(data_mslw_test)
