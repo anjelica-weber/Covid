@@ -25,8 +25,9 @@ data_mslw_test$END.DATE <- as.Date(data_mslw_test$END.DATE, "%m/%d/%Y")
 
 # Import References -------------------------------------------------------
 folder_references <- paste0(dir,"/Reference Tables")
-dict_paycycle_alt <- read_xlsx(paste0(folder_references, "/Dictionary_Alt Pay Cycles_2.xlsx"))
+dict_paycycle_alt <- read_xlsx(paste0(folder_references, "/Dictionary_Alt Pay Cycles.xlsx"))
 dict_paycycle_sys <- read.csv(paste0(folder_references,"/PayCycle.csv"), header = T, stringsAsFactors = F)
+dict_jobcodes <- read_xlsx(paste0(folder_references, "/MSLW Job Codes.xlsx"))
 #dict_paycodes <- read_xlsx(folder_references, "/All Sites Pay Code Mappings.xlsx")
 
 # Splitting Biweekly 2 Pay Cycle ------------------------------------------
@@ -47,4 +48,8 @@ format_biweekly_paycycle <- function(dfs){
   dfs_final <- rbind(dfs_other, dfs_alt_1, dfs_alt_2)
   return(dfs_final)
   }
-data_mslw_test2 <- format_biweekly_paycycle(data_mslw_test)
+data_mslw_test <- format_biweekly_paycycle(data_mslw_test)
+
+# Lookup Jobcodes ---------------------------------------------------------
+data_mslw_test <- merge.data.frame(data_mslw_test, dict_jobcodes, all.x = T)
+colnames(data_mslw_test)[which("Position.Code.Description"==colnames(data_mslw_test))] <- "J.C.DESCRIPTION"
