@@ -3,7 +3,8 @@ dir <- "C:/Users/webera04/Desktop/Code Docs"
 
 # Load Libriaries ---------------------------------------------------------
 library(readxl)
-library(dplyr)
+#library(tidyverse)
+#library(dplyr)
 
 # Import Data -------------------------------------------------------------
 folder_data <- paste0(dir,"/MSLW RAW")
@@ -78,4 +79,5 @@ colnames(data_mslw_test)[which("Hours"==colnames(data_mslw_test))] <- 'HOURS'
 colnames(data_mslw_test)[which("Expense"==colnames(data_mslw_test))] <- 'EXPENSE'
 colnames(data_mslw_test)[which("Department.Name.Worked.Dept"==colnames(data_mslw_test))] <- "WRKD.DESCRIPTION"
 colnames(data_mslw_test)[which("Department.Name.Home.Dept"==colnames(data_mslw_test))] <- "HOME.DESCRIPTION"
+colnames(data_mslw_test)[which('Pay.Code'==colnames(data_mslw_test))] <- "PAY.CODE"
 colnames(data_mslw_test)[which('Employee.ID'==colnames(data_mslw_test))] <- "LIFE"
