@@ -10,6 +10,10 @@ list_data_files <- list.files(folder_data, pattern = "xlsx$", full.names = T)
 list_data <- lapply(list_data_files, function(x) read_xlsx(x, sheet = "Export Worksheet"))
 data_MSSL_MSW <- do.call('rbind', list_data)
 
+# Add Payroll Source ------------------------------------------------------
+data_MSSL_MSW <- data_MSSL_MSW %>%
+  mutate(PAYROLL = "MSLW")
+
 # Remove Duplicates -------------------------------------------------------
 data_MSSL_MSW <- data_MSSL_MSW %>% distinct()
 
