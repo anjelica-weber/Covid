@@ -3,6 +3,7 @@ dir <- "C:/Users/webera04/Desktop/Code Docs"
 
 # Load Libriaries ---------------------------------------------------------
 library(readxl)
+library(dplyr)
 
 # Import Data -------------------------------------------------------------
 folder_data <- paste0(dir,"/MSLW RAW")
@@ -28,6 +29,8 @@ folder_references <- paste0(dir,"/Reference Tables")
 dict_paycycle_alt <- read_xlsx(paste0(folder_references, "/Dictionary_Alt Pay Cycles.xlsx"))
 dict_paycycle_sys <- read.csv(paste0(folder_references,"/PayCycle.csv"), header = T, stringsAsFactors = F)
 dict_jobcodes <- read_xlsx(paste0(folder_references, "/MSLW Job Codes.xlsx"))
+dict_COFTloc <- read_xlsx(paste0(folder_references, "/Dictionary_COFT.xlsx")) #this will be from matts excel file
+dict_site <- read_xlsx(paste0(folder_references, '/Dictionary_Site.xlsx'))
 #dict_paycodes <- read_xlsx(folder_references, "/All Sites Pay Code Mappings.xlsx")
 
 # Splitting Biweekly 2 Pay Cycle ------------------------------------------
@@ -53,3 +56,26 @@ data_mslw_test <- format_biweekly_paycycle(data_mslw_test)
 # Lookup Jobcodes ---------------------------------------------------------
 data_mslw_test <- merge.data.frame(data_mslw_test, dict_jobcodes, all.x = T)
 colnames(data_mslw_test)[which("Position.Code.Description"==colnames(data_mslw_test))] <- "J.C.DESCRIPTION"
+
+# Lookup Location ---------------------------------------------------------
+data_mslw_test <- merge.data.frame(data_mslw_test, dict_COFTloc, by.x = "WD_COFT", by.y ="COFT" , all.x = T)
+colnames(data_mslw_test)[which("COFT_LOC_GROUP"==colnames(data_mslw_test))] <- 'WRKD.LOCATION'
+data_mslw_test <- merge.data.frame(data_mslw_test, dict_COFTloc, by.x = "HD_COFT", by.y ="COFT" , all.x = T)
+colnames(data_mslw_test)[which("COFT_LOC_GROUP"==colnames(data_mslw_test))] <- 'HOME.LOCATION'
+
+# Cost Center ("Department") ---------------------------------------------
+data_mslw_test$DPT.WRKD <- paste0(data_mslw_test$WD_COFT, data_mslw_test$WD_Location, data_mslw_test$WD_Department)
+data_mslw_test$DPT.HOME <- paste0(data_mslw_test$HD_COFT, data_mslw_test$HD_Location, data_mslw_test$HD_Department)
+
+# Lookup Site -------------------------------------------------------------
+data_mslw_test <- merge.data.frame(data_mslw_test,dict_site, by.x = "Home.FacilityOR.Hospital.ID", by.y = 'Site ID', all.x = T)
+colnames(data_mslw_test)[which("Site"==colnames(data_mslw_test))] <- 'HOME.SITE'
+data_mslw_test <- merge.data.frame(data_mslw_test,dict_site, by.x = "Facility.Hospital.Id_Worked", by.y = 'Site ID', all.x = T)
+colnames(data_mslw_test)[which("Site"==colnames(data_mslw_test))] <- 'WRKD.SITE'
+
+# Rename/Format Columns ---------------------------------------------------
+colnames(data_mslw_test)[which("Hours"==colnames(data_mslw_test))] <- 'HOURS'
+colnames(data_mslw_test)[which("Expense"==colnames(data_mslw_test))] <- 'EXPENSE'
+colnames(data_mslw_test)[which("Department.Name.Worked.Dept"==colnames(data_mslw_test))] <- "WRKD.DESCRIPTION"
+colnames(data_mslw_test)[which("Department.Name.Home.Dept"==colnames(data_mslw_test))] <- "HOME.DESCRIPTION"
+colnames(data_mslw_test)[which('Employee.ID'==colnames(data_mslw_test))] <- "LIFE"
