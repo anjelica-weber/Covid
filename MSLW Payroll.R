@@ -1,5 +1,5 @@
-dir <- "C:/Users/webera04/Desktop/Code Docs"
-#setwd(dir)
+dir <- "J:/deans/Presidents/SixSigma/MSHS Productivity/Productivity/Analysis/FEMA Reimbursement/MSHS-FEMA-Reimbursement"
+setwd(dir)
 
 # Load Libriaries ---------------------------------------------------------
 library(readxl)
@@ -8,7 +8,7 @@ library(readxl)
 
 # Import Data -------------------------------------------------------------
 folder_data <- paste0(dir,"/MSLW RAW")
-list_data_files <- list.files(folder_data, pattern = "xlsx$", full.names = T)
+list_data_files <- list.files(folder_data, pattern = "rds$", full.names = T)
 list_data <- lapply(list_data_files, read_excel)
 merge_multiple_dataframes<- function(list.dfs){
   output<- list.dfs[1]
