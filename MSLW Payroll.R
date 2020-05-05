@@ -1,10 +1,9 @@
-#dir <- "J:/deans/Presidents/SixSigma/MSHS Productivity/Productivity/Analysis/FEMA Reimbursement/MSHS-FEMA-Reimbursement"
+dir <- "J:/deans/Presidents/SixSigma/MSHS Productivity/Productivity/Analysis/FEMA Reimbursement/MSHS-FEMA-Reimbursement"
 setwd(dir)
 
 # Load Libriaries ---------------------------------------------------------
 library(readxl)
 library(tidyverse)
-#library(dplyr)
 
 # Import Data -------------------------------------------------------------
 data_MSSL_MSW <- readRDS(paste0(dir,"/MSLW RAW/Data_MSSL_MSW.rds"))
@@ -14,7 +13,6 @@ data_MSSL_MSW <- data_MSSL_MSW %>% mutate(`START DATE` = paste0(substr(`START DA
                                           `START DATE` = as.Date(`START DATE`, "%m/%d/%Y"),
                                           `END DATE` = paste0(substr(`END DATE`,1,2), "/", substr(`END DATE`,3,4), "/",substr(`END DATE`,5,8)),
                                           `END DATE` = as.Date(`END DATE`, "%m/%d/%Y"))
-
 
 # Import References -------------------------------------------------------
 folder_references <- paste0(dir,"/MSLW Reference Tables")
