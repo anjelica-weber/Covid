@@ -63,11 +63,19 @@ colnames(data_MSSL_MSW)[which("Site"==colnames(data_MSSL_MSW))] <- 'HOME.SITE'
 data_MSSL_MSW <- merge.data.frame(data_MSSL_MSW,dict_site, by.x = "Facility Hospital Id_Worked", by.y = 'Site ID', all.x = T)
 colnames(data_MSSL_MSW)[which("Site"==colnames(data_MSSL_MSW))] <- 'WRKD.SITE'
 
-# Rename/Format Columns ---------------------------------------------------
+# Rename Columns ---------------------------------------------------
 colnames(data_MSSL_MSW)[which("Hours"==colnames(data_MSSL_MSW))] <- 'HOURS'
 colnames(data_MSSL_MSW)[which("Expense"==colnames(data_MSSL_MSW))] <- 'EXPENSE'
 colnames(data_MSSL_MSW)[which("Department Name Worked Dept"==colnames(data_MSSL_MSW))] <- "WRKD.DESCRIPTION"
 colnames(data_MSSL_MSW)[which("Department Name Home Dept"==colnames(data_MSSL_MSW))] <- "HOME.DESCRIPTION"
 colnames(data_MSSL_MSW)[which('Pay Code'==colnames(data_MSSL_MSW))] <- "PAY.CODE"
 colnames(data_MSSL_MSW)[which("Position Code Description"==colnames(data_MSSL_MSW))] <- "J.C.DESCRIPTION"
+colnames(data_MSSL_MSW)[which('END DATE'==colnames(data_MSSL_MSW))] <- "END.DATE"
 colnames(data_MSSL_MSW)[which('Employee ID'==colnames(data_MSSL_MSW))] <- "LIFE"
+
+# Format Columns ----------------------------------------------------------
+data_MSSL_MSW <- data_MSSL_MSW %>%
+  mutate(END.DATE = as.Date(END.DATE, format = "%m/%d/%Y"))
+
+# Clear Environment -------------------------------------------------------
+rm(list=setdiff(ls(), c("data_MSH_MSQ","data_MSBI_MSB","data_MSSL_MSW","data_Rightsourcing","dir")))
